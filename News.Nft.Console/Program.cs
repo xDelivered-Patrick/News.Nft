@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 Console.WriteLine("Hello, World!");
 
 var httpClient = new HttpClient();
-var key = "93db14a2915c481c80b5c270223ae136";
+var key = "f944a4150fc94e5590fd102ac88a99f4";
 var country = "us";
 var topic = "world";
 
@@ -14,11 +14,13 @@ var toDate = new DateTime(2021, 1, 1, 23, 59, 59);
 
 while (fromDate < DateTime.Now)
 {
-    var requestUri = $"https://newsapi.org/v2/top-headlines?country=us&apiKey=93db14a2915c481c80b5c270223ae136";
+    var requestUri = $"https://newsapi.org/v2/top-headlines?country={country}&apiKey={key}";
+    httpClient.DefaultRequestHeaders.Add("User-Agent", "NftNews");
     var response = await httpClient.GetAsync(requestUri);
+    var contentString = await response.Content.ReadAsStringAsync();
     if (response.IsSuccessStatusCode)
     {
-        Rootobject? obj = JsonConvert.DeserializeObject<Rootobject>(await response.Content.ReadAsStringAsync());
+        Rootobject? obj = JsonConvert.DeserializeObject<Rootobject>(contentString);
         if (obj != null)
         {
             foreach (var article in obj.articles.Take(3))
@@ -26,6 +28,10 @@ while (fromDate < DateTime.Now)
                 Console.WriteLine(article);
             }
         }
+    }
+    else
+    {
+        Console.WriteLine(contentString);
     }
 
     fromDate = fromDate.AddDays(1);

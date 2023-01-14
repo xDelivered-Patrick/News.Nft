@@ -1,0 +1,29 @@
+﻿@page "/news"
+@using News.Nft.Admin.Services
+
+<PageTitle>News</PageTitle>
+
+<h1>News</h1>
+
+<div class="row">
+    @foreach (var article in Articles)
+    {
+        <div class="row">
+            <span>@article.title</span>
+            <span>@article.publishedAt.ToString("d")</span>
+            <a href="@article.url">@article.url</a>
+        </div>
+    }
+</div>
+
+@code {
+    protected List<NftNewsService.Article> Articles { get; set; } = new List<NftNewsService.Article>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var key = "f944a4150fc94e5590fd102ac88a99f4";
+        var country = "us";
+        var topic = "world";
+        Articles = await NftNewsService.GetLast24HourArticles();
+    }
+}
